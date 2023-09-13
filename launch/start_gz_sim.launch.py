@@ -33,7 +33,7 @@ import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, ExecuteProcess, IncludeLaunchDescription
-from launch.conditions import IfCondition
+from launch.conditions import IfCondition, UnlessCondition
 from launch.substitutions import LaunchConfiguration
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import SetParameter
@@ -44,14 +44,31 @@ def generate_launch_description():
     multiorca_dir = get_package_share_directory('multiple_orca')
     pkg_ros_gz_sim = get_package_share_directory("ros_gz_sim")        
 
-    
+    use_gz_gui = LaunchConfiguration('use_gz_gui')   
     use_sim_time = LaunchConfiguration('use_sim_time')   
     declare_use_sim_time_cmd = DeclareLaunchArgument(
             'use_sim_time',
             default_value='false',
             description='use_sim_time param')
+    
+    declare_use_gui_cmd = DeclareLaunchArgument(
+            'use_gz_gui',
+            default_value='true',
+            description='Bring up Gazebo GUI')
     # Gazebo.
-    gz_sim_server = IncludeLaunchDescription(
+    gz_sim_server = IncludeLaunchDescription(        
+        PythonLaunchDescriptionSource(
+            os.path.join(pkg_ros_gz_sim, "launch", "gz_sim.launch.py")
+        ),
+        launch_arguments={
+            "gz_args": "-v3 -r "   # -v: option is for verbose level
+            + os.path.join(multiorca_dir, 'worlds', 'sand_empty.world'),
+            "use_sim_time":use_sim_time
+        }.items(),
+        condition=IfCondition(use_gz_gui)
+    )
+    
+    gz_sim_gui = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(pkg_ros_gz_sim, "launch", "gz_sim.launch.py")
         ),
@@ -60,23 +77,14 @@ def generate_launch_description():
             + os.path.join(multiorca_dir, 'worlds', 'sand_empty.world'),
             "use_sim_time":use_sim_time
         }.items(),
-    )
-    
-    gz_sim_gui = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(pkg_ros_gz_sim, "launch", "gz_sim.launch.py")
-        ),
-        launch_arguments={"gz_args": "-v3 -g ","use_sim_time":use_sim_time}.items(),
-    )
-    
-   
+        condition=UnlessCondition(use_gz_gui)
+    )     
 
     ld = LaunchDescription()    
     ld.add_action(declare_use_sim_time_cmd)
+    ld.add_action(declare_use_gui_cmd)
     ld.add_action(gz_sim_server)
     ld.add_action(gz_sim_gui)
-
-
     return ld
 
 

@@ -50,10 +50,6 @@ def generate_launch_description():
     sim_left_ini = os.path.join(multiorca_dir, 'cfg', 'sim_left.ini')
     sim_right_ini = os.path.join(multiorca_dir, 'cfg', 'sim_right.ini')
 
-    
-    
-
-
     # to bring up a rov, there should exit configuration files for the rov.
     # cfg/{rov-name}_bridge.yaml
     # models/{rov-name}
@@ -87,13 +83,24 @@ def generate_launch_description():
     # to use the gazebo time, /clock topic should be published. You can do it using parameter bride.
     declare_use_sim_time_cmd = DeclareLaunchArgument(
             'use_sim_time',
-            default_value='true',
+            default_value='false',
             description='use_sim_time param')
+    
+    use_gz_gui = LaunchConfiguration('use_gz_gui')   
+    
+    # Running Gazebo GUI in the docker container takes a lot of resources. 
+    # You can set this arg to 'false' to start only GZ server. 
+    # But you need to shutdown the server manually. 
+    declare_use_gui_cmd = DeclareLaunchArgument(
+            'use_gz_gui',
+            default_value='true',
+            description='Bring up Gazebo GUI')
 
     # Start Gazebo with default underwater world
     spawn_world_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(multiorca_dir, 'launch', 'start_gz_sim.launch.py')),
-        launch_arguments={'use_sim_time':use_sim_time}.items()
+        launch_arguments={'use_sim_time':use_sim_time, 
+                          'use_gz_gui':use_gz_gui}.items()
         )   
     
     
@@ -231,6 +238,27 @@ def generate_launch_description():
                     '--reptype','gz.msgs.Boolean','--timeout','20000','--req',opt_str],                 
                 output='screen')    
         
+        # with open(sdf_filepath, "r") as infp:
+        #     robot_desc = infp.read()
+        #     # print(robot_desc)
+
+        #  # Remap the /tf and /tf_static under /ignore as the TF conflicts.
+        # robot_state_publisher = Node(
+        #     package="robot_state_publisher",
+        #     executable="robot_state_publisher",
+        #     name="robot_state_publisher",
+        #     namespace=rov_ns,
+        #     output="both",
+        #     parameters=[
+        #         {"robot_description": robot_desc},
+        #     ],
+        #     remappings=[
+        #         ("/tf", "tf"),
+        #         ("/tf_static", "tf_static"),
+        #     ],
+        # )
+
+        
         # Gazebo Bridge.
         start_gz_brdg_cmd = Node(
                 package="ros_gz_bridge",
@@ -342,12 +370,14 @@ def generate_launch_description():
         instances_cmds.append(start_orca_cam_right_cmd)        
         instances_cmds.append(orca_bringup_cmd)
         instances_cmds.append(start_spawn_rov_cmd)
+        # instances_cmds.append(robot_state_publisher)
         instances_cmds.append(tf_static_pub_cmd)
 
     
     ld = LaunchDescription()
         
     ld.add_action(declare_use_sim_time_cmd)
+    ld.add_action(declare_use_gui_cmd)    
     ld.add_action(spawn_world_cmd)
 
     for inst in instances_cmds:
