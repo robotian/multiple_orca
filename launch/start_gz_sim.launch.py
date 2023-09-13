@@ -62,19 +62,19 @@ def generate_launch_description():
         }.items(),
     )
     
-    # gz_sim_gui = IncludeLaunchDescription(
-    #     PythonLaunchDescriptionSource(
-    #         os.path.join(pkg_ros_gz_sim, "launch", "gz_sim.launch.py")
-    #     ),
-    #     launch_arguments={"gz_args": "-v3 -g"}.items(),
-    # )
-    # set_use_sim_time_param = SetParameter(name='use_sim_time', value=True)
+    gz_sim_gui = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(pkg_ros_gz_sim, "launch", "gz_sim.launch.py")
+        ),
+        launch_arguments={"gz_args": "-v3 -g ","use_sim_time":use_sim_time}.items(),
+    )
+    
    
 
     ld = LaunchDescription()    
     ld.add_action(declare_use_sim_time_cmd)
     ld.add_action(gz_sim_server)
-    # ld.add_action(gz_sim_gui)
+    ld.add_action(gz_sim_gui)
 
 
     return ld
