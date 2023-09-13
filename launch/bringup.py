@@ -23,6 +23,10 @@
 # SOFTWARE.
 
 """
+
+TEST
+
+
 Bring up all nodes
 
 Use a modified navigation_launch.py that doesn't launch velocity_smoother.
