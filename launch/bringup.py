@@ -45,8 +45,6 @@ from launch_ros.descriptions import ComposableNode
 from launch.substitutions import TextSubstitution
 from launch.launch_context import LaunchContext
 
-from launch_ros.actions import SetParameter
-# import yaml
 
 def launch_setup(context, *args, **kwargs):
     arg_namespace = context.perform_substitution(LaunchConfiguration('namespace'))
@@ -62,7 +60,7 @@ def launch_setup(context, *args, **kwargs):
                 namespace=f"{arg_namespace}/mavros",
                 parameters=[mavros_params_file, {'use_sim_time': use_sim_time}],            
                 remappings=[('/tf', f"/{arg_namespace}/tf"),
-                    ('/tf_static', f"/{arg_namespace}/tf_static")] ,
+                    ('/tf_static', f"/{arg_namespace}/tf_static")] ,  # need to force namespace
                 condition=IfCondition(LaunchConfiguration('mavros')),
             )
     return [start_mav_node]
@@ -77,7 +75,7 @@ def generate_launch_description():
     nav2_params_file = os.path.join(multiorca_dir, 'params', 'nav2_params.yaml')
 
 
-    mavros_params_file = LaunchConfiguration('mavros_params_file')
+    # mavros_params_file = LaunchConfiguration('mavros_params_file')
     orca_params_file = LaunchConfiguration('orca_params_file')
 
     
@@ -245,10 +243,10 @@ def generate_launch_description():
         # ),
 
         ComposableNodeContainer(
-            name='tf_container',
+            name='tf_container2',
             package='rclcpp_components',
             executable='component_container',  
-            namespace='',          
+            namespace=namespace,          
             composable_node_descriptions=[
                 ComposableNode(
                     package='tf2_ros',
@@ -267,7 +265,16 @@ def generate_launch_description():
                         'rotation.w': 0.7071067811865476,
                         'use_sim_time': use_sim_time
                         }],
-                    remappings=remappings),
+                    remappings=remappings),                
+            ],
+            output='screen',
+        ),
+        ComposableNodeContainer(
+            name='tf_container3',
+            package='rclcpp_components',
+            executable='component_container',  
+            namespace=namespace,          
+            composable_node_descriptions=[
                 ComposableNode(
                     package='tf2_ros',
                     plugin='tf2_ros::StaticTransformBroadcasterNode',

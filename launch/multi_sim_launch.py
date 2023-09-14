@@ -55,7 +55,7 @@ def generate_launch_description():
     # models/{rov-name}
     # params/sim_mavros_params_{rov-name}
     robots = [
-        {'name': 'tur1', 'x_pose': 0.0, 'y_pose': 0.0, 'z_pose': 0.0,
+        {'name': 'rov1', 'x_pose': 0.0, 'y_pose': 0.0, 'z_pose': 0.0,
                            'x': 0.0, 'y': 0.0, 'z': 0.0, 'w': 1.0, 'instance':'-I0',
                            'home':'33.810313,-118.39386700000001,0.0,270.0',
                            'sysid':'1',
@@ -138,7 +138,7 @@ def generate_launch_description():
 
         declare_arg_slam_cmd = DeclareLaunchArgument(
             'slam',
-            default_value='True',
+            default_value='true',
             description='Launch SLAM?',
         )   
 
@@ -151,10 +151,10 @@ def generate_launch_description():
         # currently world frames are being published in each rov namespace. 
         # TODO need to make it globally available
         tf_static_pub_cmd = ComposableNodeContainer(
-            name='tf_container',
+            name='tf_container1',
             package='rclcpp_components',
             executable='component_container',  
-            namespace='',          
+            namespace=rov_ns,          
             composable_node_descriptions=[
                 ComposableNode(
                     package='tf2_ros',
@@ -228,11 +228,11 @@ def generate_launch_description():
                     ',z:', str(robot['z']),
                     ',w:', str(robot['w']),r'}}']        
         
-        # To spawn a model, you need to wait until the 'create' service becomes available. 
+        # To spawn a model, you need to wait until the 'create' service becomes available. --> Couldn't find a better way. Python script later?
         # But there is no way to check its availability. So, give it enough time to wait by increasing 'timeout'
         # If it does not work, then you can spawn them seperately using the following command line inputs. 
-        #gz service -s /world/sand/create --reqtype gz.msgs.EntityFactory --reptype gz.msgs.Boolean --timeout 1000 --req 'sdf_filename:"/home/robotian/orca_ws/src/multiple_orca/models/rov1/model.sdf" pose:{position:{x:0,y:0,z:0},orientation:{x:0.0,y:0.0,z:0.0,w:1.0}}'
-        #gz service -s /world/sand/create --reqtype gz.msgs.EntityFactory --reptype gz.msgs.Boolean --timeout 1000 --req 'sdf_filename:"/home/robotian/orca_ws/src/multiple_orca/models/rov2/model.sdf" pose:{position:{x:0,y:3,z:0},orientation:{x:0.0,y:0.0,z:0.0,w:1.0}}'
+        # gz service -s /world/sand/create --reqtype gz.msgs.EntityFactory --reptype gz.msgs.Boolean --timeout 1000 --req 'sdf_filename:"/home/robotian/orca_ws/src/multiple_orca/models/rov1/model.sdf" pose:{position:{x:0,y:0,z:0},orientation:{x:0.0,y:0.0,z:0.0,w:1.0}}'
+        # gz service -s /world/sand/create --reqtype gz.msgs.EntityFactory --reptype gz.msgs.Boolean --timeout 1000 --req 'sdf_filename:"/home/robotian/orca_ws/src/multiple_orca/models/rov2/model.sdf" pose:{position:{x:0,y:3,z:0},orientation:{x:0.0,y:0.0,z:0.0,w:1.0}}'
         start_spawn_rov_cmd =  ExecuteProcess(
                 cmd=['gz', 'service', '-s', '/world/sand/create', '--reqtype', 'gz.msgs.EntityFactory',
                     '--reptype','gz.msgs.Boolean','--timeout','20000','--req',opt_str],                 
@@ -316,6 +316,7 @@ def generate_launch_description():
                 ('camera_info', 'stereo_left/camera_info'),
                 tuple(remappings),
             ],
+            condition=IfCondition(LaunchConfiguration('slam'))
         )
 
         start_orca_cam_right_cmd = Node(
@@ -335,6 +336,7 @@ def generate_launch_description():
                 ('camera_info', 'stereo_right/camera_info'),
                 tuple(remappings),
             ],
+            condition=IfCondition(LaunchConfiguration('slam'))
         )
         
 
