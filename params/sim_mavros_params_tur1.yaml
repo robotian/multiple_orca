@@ -45,3 +45,11 @@
   ros__parameters:
     tf:
       listen: false  # Do not listen to tf
+
+# sys_status & sys_time connection options
+/**/mavros/conn:
+    ros__parameters:
+      heartbeat_rate: 1.0    # send heartbeat rate in Hertz
+      timeout: 20.0          # heartbeat timeout in seconds
+      timesync_rate: 10.0    # TIMESYNC rate in Hertz (feature disabled if 0.0)
+      system_time_rate: 1.0  # send system time to FCU rate in Hertz (disabled if 0.0)

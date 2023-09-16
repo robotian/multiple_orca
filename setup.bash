@@ -12,7 +12,7 @@ export PATH=$HOME/QGC/ardupilot/Tools/autotest:$PATH
 source $HOME/workspaces/tur_ws_cont/install/setup.bash
 
 # Add ardupilot_gazebo plugin
-export GZ_SIM_SYSTEM_PLUGIN_PATH=$HOME/ros2_ws/build/ardupilot_gazebo:$Z_SIM_SYSTEM_PLUGIN_PATH
+export GZ_SIM_SYSTEM_PLUGIN_PATH=$HOME/ros2_ws/build/ardupilot_gazebo:$GZ_SIM_SYSTEM_PLUGIN_PATH
 
 # Optional: add ardupilot_gazebo models and worlds
 export GZ_SIM_RESOURCE_PATH=$HOME/ros2_ws/src/ardupilot_gazebo/models:$HOME/ros2_ws/src//ardupilot_gazebo/worlds:$GZ_SIM_RESOURCE_PATH

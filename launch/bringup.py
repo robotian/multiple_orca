@@ -48,7 +48,9 @@ from launch.launch_context import LaunchContext
 
 def launch_setup(context, *args, **kwargs):
     arg_namespace = context.perform_substitution(LaunchConfiguration('namespace'))
-    mavros_params_file = LaunchConfiguration('mavros_params_file')
+    # mavros_params_file = LaunchConfiguration('mavros_params_file')
+    multiorca_dir = get_package_share_directory('multiple_orca')
+    mavros_params_file = os.path.join(multiorca_dir, 'params', f"sim_mavros_params_{arg_namespace}.yaml")
     use_sim_time = LaunchConfiguration('use_sim_time')
     start_mav_node = Node(
                 package='mavros',
@@ -170,9 +172,10 @@ def generate_launch_description():
 
         DeclareLaunchArgument(
             'slam',
-            default_value='True',
+            default_value='false',
             description='Launch SLAM?',
         ),
+
         DeclareLaunchArgument(
             'mavros_ns',
             default_value='',
@@ -180,7 +183,6 @@ def generate_launch_description():
         ),
 
         OpaqueFunction(function=launch_setup),  # mavros node
-        
 
         # Translate messages MAV <-> ROS
         # Node(
@@ -189,17 +191,18 @@ def generate_launch_description():
         #     output='screen',
         #     # mavros_node is actually many nodes, so we can't override the name
         #     # name='mavros_node',
-        #     # namespace='rov1/mavros',
-        #     namespace=mavros_ns,
-        #     parameters=[mavros_params_file],            
+        #     namespace = 'rov2/mavros',
+        #     parameters=[mavros_params_file,
+        #                 # {
+        #                 #     "fcu_url": "tcp://localhost:5760",
+        #                 #     "gcs_url": "udp://@localhost:14550",  
+        #                 #     "tgt_system" : 1,
+        #                 # }
+        #                 ],
         #     remappings=[('/tf', '/rov2/tf'),
-        #           ('/tf_static', '/rov2/tf_static')] ,
-        #     # remappings=[('/tf', '/{}/tf'.format(LaunchConfiguration('namespace'))),
-        #     #       ('/tf_static', '/{}/tf_static'.format(LaunchConfiguration('namespace')))] ,
+        #             ('/tf_static', '/rov2/tf_static')] ,  # need to force namespace
         #     condition=IfCondition(LaunchConfiguration('mavros')),
-        # ),
-
-        
+        # ),        
 
         # Replacement for base_controller: complete the tf tree
         # if base_controller runs, these three static_transfor_publisher will not run. 
@@ -228,20 +231,9 @@ def generate_launch_description():
         #     condition=UnlessCondition(LaunchConfiguration('base')),
         # ),
 
+
         # on the other hand, these two static tf pub need to be running
         # Replacement for an URDF file: base_link->left_camera_link is static
-        # ExecuteProcess(
-        #     cmd=['/opt/ros/humble/lib/tf2_ros/static_transform_publisher',
-        #          '--x', '-0.15',
-        #          '--y', '0.18',
-        #          '--z', '-0.0675',
-        #          '--pitch', str(math.pi/2),
-        #          '--frame-id', 'base_link',
-        #          '--child-frame-id', 'left_camera_link',
-        #          ],
-        #     output='screen',
-        # ),
-
         ComposableNodeContainer(
             name='tf_container2',
             package='rclcpp_components',
@@ -269,6 +261,7 @@ def generate_launch_description():
             ],
             output='screen',
         ),
+        # Provide down frame to accommodate down-facing cameras
         ComposableNodeContainer(
             name='tf_container3',
             package='rclcpp_components',
@@ -297,21 +290,6 @@ def generate_launch_description():
             ],
             output='screen',
         ),
-
-        # Provide down frame to accommodate down-facing cameras
-        # ExecuteProcess(
-        #     cmd=['/opt/ros/humble/lib/tf2_ros/static_transform_publisher',
-        #          '--pitch', str(math.pi/2),
-        #          '--frame-id', 'slam',
-        #          '--child-frame-id', 'down', 
-        #          '--ros-args',
-        #          '-r','/tf:=/rov2/tf',
-        #          '-r','/tf_static:=/rov2/tf_static',
-        #          '-r','__ns:=/rov2'],
-        #     output='screen',
-        # ),
-
-
 
         # orb_slam2: build a map of 3d points, localize against the map, and publish the camera pose
         Node(

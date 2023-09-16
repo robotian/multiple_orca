@@ -43,10 +43,8 @@ from launch_ros.descriptions import ComposableNode
 def generate_launch_description():
 
     # define variables that are not depending on the namespace
-    multiorca_dir = get_package_share_directory('multiple_orca')  
-    
+    multiorca_dir = get_package_share_directory('multiple_orca')      
     orca_params_file = os.path.join(multiorca_dir, 'params', 'sim_orca_params.yaml')
-
     sim_left_ini = os.path.join(multiorca_dir, 'cfg', 'sim_left.ini')
     sim_right_ini = os.path.join(multiorca_dir, 'cfg', 'sim_right.ini')
 
@@ -59,34 +57,39 @@ def generate_launch_description():
                            'x': 0.0, 'y': 0.0, 'z': 0.0, 'w': 1.0, 'instance':'-I0',
                            'home':'33.810313,-118.39386700000001,0.0,270.0',
                            'sysid':'1',
-                           'fcu_url':'tcp://localhost:5760',
-                           'gcs_url':'udp://@localhost:14550'},
-        # {'name': 'rov2', 'x_pose': 0.0, 'y_pose': 3.0, 'z_pose': 0.0,
-        #                    'x': 0.0, 'y': 0.0, 'z': 0.0, 'w': 1.0, 'instance':'-I1',
-        #                    'home':'33.810311,-118.39386700000001,0.0,270.0',
-        #                    'sysid':'2',
-        #                    'fcu_url':'tcp://localhost:5770',
-        #                    'gcs_url':'udp://@localhost:14560'},
-        # {'name': 'rov3', 'x_pose': 0.0, 'y_pose': 6.0, 'z_pose': 0.0,
+                        #    'fcu_url':'tcp://localhost:5760',
+                        #    'gcs_url':'udp://@localhost:14550'
+                           },
+        {'name': 'rov2', 'x_pose': 0.0, 'y_pose': 3.0, 'z_pose': 0.0,
+                           'x': 0.0, 'y': 0.0, 'z': 0.0, 'w': 1.0, 'instance':'-I1',
+                           'home':'33.810311,-118.39386700000001,0.0,270.0',
+                           'sysid':'2',
+                        #    'fcu_url':'tcp://localhost:5770',
+                        #    'gcs_url':'udp://@localhost:14560'
+                           },
+        # {'name': 'tur3', 'x_pose': 1.5, 'y_pose': 1.5, 'z_pose': 0.0,
         #                    'x': 0.0, 'y': 0.0, 'z': 0.0, 'w': 1.0, 'instance':'-I2',
         #                    'home':'33.810311,-118.39386700000001,0.0,270.0',
         #                    'sysid':'3',
-        #                    'fcu_url':'tcp://localhost:5780',
-        #                    'gcs_url':'udp://@localhost:14570'},
+        #                 #    'fcu_url':'tcp://localhost:5780',
+        #                 #    'gcs_url':'udp://@localhost:14570'
+        #                    },
         ]
     
     remappings = [('/tf', 'tf'),
                   ('/tf_static', 'tf_static')] 
     
 
+    use_gz_gui = LaunchConfiguration('use_gz_gui')   
     use_sim_time = LaunchConfiguration('use_sim_time')   
+
+    
     # to use the gazebo time, /clock topic should be published. You can do it using parameter bride.
     declare_use_sim_time_cmd = DeclareLaunchArgument(
             'use_sim_time',
             default_value='false',
             description='use_sim_time param')
     
-    use_gz_gui = LaunchConfiguration('use_gz_gui')   
     
     # Running Gazebo GUI in the docker container takes a lot of resources. 
     # You can set this arg to 'false' to start only GZ server. 
@@ -138,7 +141,7 @@ def generate_launch_description():
 
         declare_arg_slam_cmd = DeclareLaunchArgument(
             'slam',
-            default_value='true',
+            default_value='True',
             description='Launch SLAM?',
         )   
 
@@ -151,7 +154,7 @@ def generate_launch_description():
         # currently world frames are being published in each rov namespace. 
         # TODO need to make it globally available
         tf_static_pub_cmd = ComposableNodeContainer(
-            name='tf_container1',
+            name='tf_container_1',
             package='rclcpp_components',
             executable='component_container',  
             namespace=rov_ns,          
@@ -238,27 +241,7 @@ def generate_launch_description():
                     '--reptype','gz.msgs.Boolean','--timeout','20000','--req',opt_str],                 
                 output='screen')    
         
-        # with open(sdf_filepath, "r") as infp:
-        #     robot_desc = infp.read()
-        #     # print(robot_desc)
-
-        #  # Remap the /tf and /tf_static under /ignore as the TF conflicts.
-        # robot_state_publisher = Node(
-        #     package="robot_state_publisher",
-        #     executable="robot_state_publisher",
-        #     name="robot_state_publisher",
-        #     namespace=rov_ns,
-        #     output="both",
-        #     parameters=[
-        #         {"robot_description": robot_desc},
-        #     ],
-        #     remappings=[
-        #         ("/tf", "tf"),
-        #         ("/tf_static", "tf_static"),
-        #     ],
-        # )
-
-        
+       
         # Gazebo Bridge.
         start_gz_brdg_cmd = Node(
                 package="ros_gz_bridge",
@@ -284,9 +267,12 @@ def generate_launch_description():
                 executable='image_bridge',
                 name=TextSubstitution(text=f"gz_im_brdg_{rov_ns}"), #name="gz_img_brg_rov1",
                 arguments=[f"{rov_ns}/stereo_left", f"{rov_ns}/stereo_right"],
+                # namespace=rov_ns,  # not directly using Namespace
+                # arguments=[f"{rov_ns}/stereo_left", f"{rov_ns}/stereo_right"],
                 # remappings=remappings,
                 parameters=[{'use_sim_time':use_sim_time}],
                 output='screen',
+                condition=IfCondition(LaunchConfiguration('slam'))
             )        
         
         start_rviz_cmd = IncludeLaunchDescription(
@@ -316,7 +302,7 @@ def generate_launch_description():
                 ('camera_info', 'stereo_left/camera_info'),
                 tuple(remappings),
             ],
-            condition=IfCondition(LaunchConfiguration('slam'))
+            # condition=IfCondition(LaunchConfiguration('slam'))
         )
 
         start_orca_cam_right_cmd = Node(
@@ -336,7 +322,7 @@ def generate_launch_description():
                 ('camera_info', 'stereo_right/camera_info'),
                 tuple(remappings),
             ],
-            condition=IfCondition(LaunchConfiguration('slam'))
+            # condition=IfCondition(LaunchConfiguration('slam'))
         )
         
 
@@ -370,9 +356,9 @@ def generate_launch_description():
         instances_cmds.append(start_rviz_cmd)
         instances_cmds.append(start_orca_cam_left_cmd)
         instances_cmds.append(start_orca_cam_right_cmd)        
-        instances_cmds.append(orca_bringup_cmd)
         instances_cmds.append(start_spawn_rov_cmd)
         # instances_cmds.append(robot_state_publisher)
+        instances_cmds.append(orca_bringup_cmd)
         instances_cmds.append(tf_static_pub_cmd)
 
     
