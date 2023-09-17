@@ -463,6 +463,11 @@
 						<radius>0.3</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 		</link>
 		<joint name="world_fixed_jnt" type="fixed">
@@ -470,8 +475,903 @@
 			<parent>world</parent>
 			<child>anchor</child>
 		</joint>
-		<link name="seg15_pitch">
+		<link name="seg20_pitch">
 			<pose relative_to="anchor">0 0 0 0 0 0</pose>
+			<inertial>
+				<mass>1e-10</mass>
+				<inertia>
+					<ixx>1e-10</ixx>
+					<ixy>0</ixy>
+					<ixz>0</ixz>
+					<iyy>1e-10</iyy>
+					<iyz>0</iyz>
+					<izz>1e-10</izz>
+				</inertia>
+			</inertial>
+			<visual name="seg20_pitch_vis">
+				<pose>0 0 0 1.5707963267948966  0 0</pose>
+				<geometry>
+					<cylinder>
+						<length>0.02</length>
+						<radius>0.01</radius>
+					</cylinder>
+				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
+			</visual>
+		</link>
+		<joint name="seg20_pitch_jnt" type="revolute">
+			<pose>0 0 0 0 0 0</pose>
+			<parent>anchor</parent>
+			<child>seg20_pitch</child>
+			<axis>
+				<xyz expressed_in="anchor">0 1 0</xyz>
+				<limit>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
+				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
+			</axis>
+		</joint>
+		<link name="seg20_yaw">
+			<pose relative_to="seg20_pitch">0 0 0 0 0 0</pose>
+			<inertial>
+				<mass>1e-10</mass>
+				<inertia>
+					<ixx>1e-10</ixx>
+					<ixy>0</ixy>
+					<ixz>0</ixz>
+					<iyy>1e-10</iyy>
+					<iyz>0</iyz>
+					<izz>1e-10</izz>
+				</inertia>
+			</inertial>
+			<visual name="seg20_yaw_vis">
+				<pose>0 0 0 0 0 0</pose>
+				<geometry>
+					<cylinder>
+						<length>0.02</length>
+						<radius>0.01</radius>
+					</cylinder>
+				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
+			</visual>
+		</link>
+		<joint name="seg20_yaw_jnt" type="revolute">
+			<pose>0 0 0 0 0 0</pose>
+			<parent>seg20_pitch</parent>
+			<child>seg20_yaw</child>
+			<axis>
+				<xyz expressed_in="seg20_pitch">0 0 1</xyz>
+				<limit>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
+				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
+			</axis>
+		</joint>
+		<link name="seg20_body">
+			<pose relative_to="seg20_yaw">-0.2 0 0 0 0 0</pose>
+			<inertial>
+				<mass>1e-05</mass>
+				<inertia>
+					<ixx>1e-05</ixx>
+					<ixy>0</ixy>
+					<ixz>0</ixz>
+					<iyy>1e-05</iyy>
+					<iyz>0</iyz>
+					<izz>1e-05</izz>
+				</inertia>
+			</inertial>
+			<visual name="seg20_body_vis">
+				<pose>0 0 0 0 1.5707963267948966 0</pose>
+				<geometry>
+					<cylinder>
+						<length>0.4</length>
+						<radius>0.01</radius>
+					</cylinder>
+				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
+			</visual>
+			<collision name="seg20_body_col">
+				<pose>0 0 0 0 1.5707963267948966 0</pose>
+				<geometry>
+					<cylinder>
+						<length>0.4</length>
+						<radius>0.01</radius>
+					</cylinder>
+				</geometry>
+			</collision>
+		</link>
+		<joint name="seg20_body_jnt" type="revolute">
+			<pose>0.2 0 0 0 0 0</pose>
+			<parent>seg20_yaw</parent>
+			<child>seg20_body</child>
+			<axis>
+				<xyz expressed_in="seg20_yaw">1 0 0</xyz>
+				<limit>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
+				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
+			</axis>
+		</joint>
+		<plugin filename="gz-sim-buoyancy-engine-system" name="gz::sim::systems::BuoyancyEngine">
+			<link_name>seg20_body</link_name>
+			<namespace>cable</namespace>
+			<min_volume>0.0000</min_volume>
+			<neutral_volume>0.00000001</neutral_volume>
+			<default_volume>0.00000002</default_volume>
+			<max_volume>0.00000003</max_volume>
+			<max_inflation_rate>0.000000001</max_inflation_rate>
+			<surface>0.0</surface>
+		</plugin>
+		<plugin filename="gz-sim-hydrodynamics-system" name="gz::sim::systems::Hydrodynamics">
+			<link_name>seg20_body</link_name>
+			<water_density>1000</water_density>
+			<xDotU>0</xDotU>
+			<yDotV>0</yDotV>
+			<zDotW>0</zDotW>
+			<kDotP>0</kDotP>
+			<mDotQ>0</mDotQ>
+			<nDotR>0</nDotR>
+			<xU>0</xU>
+			<yV>0</yV>
+			<zW>0</zW>
+			<kP>0</kP>
+			<mQ>0</mQ>
+			<nR>0</nR>
+			<xUabsU>-0.0000005</xUabsU>
+			<yVabsV>-0.0000005</yVabsV>
+			<zWabsW>-0.0000005</zWabsW>
+			<kPabsP>-0.0000001</kPabsP>
+			<mQabsQ>-0.0000001</mQabsQ>
+			<nRabsR>-0.0000001</nRabsR>
+		</plugin>
+		<link name="seg19_pitch">
+			<pose relative_to="seg20_body">-0.2 0 0 0 0 0</pose>
+			<inertial>
+				<mass>1e-10</mass>
+				<inertia>
+					<ixx>1e-10</ixx>
+					<ixy>0</ixy>
+					<ixz>0</ixz>
+					<iyy>1e-10</iyy>
+					<iyz>0</iyz>
+					<izz>1e-10</izz>
+				</inertia>
+			</inertial>
+			<visual name="seg19_pitch_vis">
+				<pose>0 0 0 1.5707963267948966  0 0</pose>
+				<geometry>
+					<cylinder>
+						<length>0.02</length>
+						<radius>0.01</radius>
+					</cylinder>
+				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
+			</visual>
+		</link>
+		<joint name="seg19_pitch_jnt" type="revolute">
+			<pose>0 0 0 0 0 0</pose>
+			<parent>seg20_body</parent>
+			<child>seg19_pitch</child>
+			<axis>
+				<xyz expressed_in="seg20_body">0 1 0</xyz>
+				<limit>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
+				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
+			</axis>
+		</joint>
+		<link name="seg19_yaw">
+			<pose relative_to="seg19_pitch">0 0 0 0 0 0</pose>
+			<inertial>
+				<mass>1e-10</mass>
+				<inertia>
+					<ixx>1e-10</ixx>
+					<ixy>0</ixy>
+					<ixz>0</ixz>
+					<iyy>1e-10</iyy>
+					<iyz>0</iyz>
+					<izz>1e-10</izz>
+				</inertia>
+			</inertial>
+			<visual name="seg19_yaw_vis">
+				<pose>0 0 0 0 0 0</pose>
+				<geometry>
+					<cylinder>
+						<length>0.02</length>
+						<radius>0.01</radius>
+					</cylinder>
+				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
+			</visual>
+		</link>
+		<joint name="seg19_yaw_jnt" type="revolute">
+			<pose>0 0 0 0 0 0</pose>
+			<parent>seg19_pitch</parent>
+			<child>seg19_yaw</child>
+			<axis>
+				<xyz expressed_in="seg19_pitch">0 0 1</xyz>
+				<limit>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
+				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
+			</axis>
+		</joint>
+		<link name="seg19_body">
+			<pose relative_to="seg19_yaw">-0.2 0 0 0 0 0</pose>
+			<inertial>
+				<mass>1e-05</mass>
+				<inertia>
+					<ixx>1e-05</ixx>
+					<ixy>0</ixy>
+					<ixz>0</ixz>
+					<iyy>1e-05</iyy>
+					<iyz>0</iyz>
+					<izz>1e-05</izz>
+				</inertia>
+			</inertial>
+			<visual name="seg19_body_vis">
+				<pose>0 0 0 0 1.5707963267948966 0</pose>
+				<geometry>
+					<cylinder>
+						<length>0.4</length>
+						<radius>0.01</radius>
+					</cylinder>
+				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
+			</visual>
+			<collision name="seg19_body_col">
+				<pose>0 0 0 0 1.5707963267948966 0</pose>
+				<geometry>
+					<cylinder>
+						<length>0.4</length>
+						<radius>0.01</radius>
+					</cylinder>
+				</geometry>
+			</collision>
+		</link>
+		<joint name="seg19_body_jnt" type="revolute">
+			<pose>0.2 0 0 0 0 0</pose>
+			<parent>seg19_yaw</parent>
+			<child>seg19_body</child>
+			<axis>
+				<xyz expressed_in="seg19_yaw">1 0 0</xyz>
+				<limit>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
+				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
+			</axis>
+		</joint>
+		<plugin filename="gz-sim-buoyancy-engine-system" name="gz::sim::systems::BuoyancyEngine">
+			<link_name>seg19_body</link_name>
+			<namespace>cable</namespace>
+			<min_volume>0.0000</min_volume>
+			<neutral_volume>0.00000001</neutral_volume>
+			<default_volume>0.00000002</default_volume>
+			<max_volume>0.00000003</max_volume>
+			<max_inflation_rate>0.000000001</max_inflation_rate>
+			<surface>0.0</surface>
+		</plugin>
+		<plugin filename="gz-sim-hydrodynamics-system" name="gz::sim::systems::Hydrodynamics">
+			<link_name>seg19_body</link_name>
+			<water_density>1000</water_density>
+			<xDotU>0</xDotU>
+			<yDotV>0</yDotV>
+			<zDotW>0</zDotW>
+			<kDotP>0</kDotP>
+			<mDotQ>0</mDotQ>
+			<nDotR>0</nDotR>
+			<xU>0</xU>
+			<yV>0</yV>
+			<zW>0</zW>
+			<kP>0</kP>
+			<mQ>0</mQ>
+			<nR>0</nR>
+			<xUabsU>-0.0000005</xUabsU>
+			<yVabsV>-0.0000005</yVabsV>
+			<zWabsW>-0.0000005</zWabsW>
+			<kPabsP>-0.0000001</kPabsP>
+			<mQabsQ>-0.0000001</mQabsQ>
+			<nRabsR>-0.0000001</nRabsR>
+		</plugin>
+		<link name="seg18_pitch">
+			<pose relative_to="seg19_body">-0.2 0 0 0 0 0</pose>
+			<inertial>
+				<mass>1e-10</mass>
+				<inertia>
+					<ixx>1e-10</ixx>
+					<ixy>0</ixy>
+					<ixz>0</ixz>
+					<iyy>1e-10</iyy>
+					<iyz>0</iyz>
+					<izz>1e-10</izz>
+				</inertia>
+			</inertial>
+			<visual name="seg18_pitch_vis">
+				<pose>0 0 0 1.5707963267948966  0 0</pose>
+				<geometry>
+					<cylinder>
+						<length>0.02</length>
+						<radius>0.01</radius>
+					</cylinder>
+				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
+			</visual>
+		</link>
+		<joint name="seg18_pitch_jnt" type="revolute">
+			<pose>0 0 0 0 0 0</pose>
+			<parent>seg19_body</parent>
+			<child>seg18_pitch</child>
+			<axis>
+				<xyz expressed_in="seg19_body">0 1 0</xyz>
+				<limit>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
+				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
+			</axis>
+		</joint>
+		<link name="seg18_yaw">
+			<pose relative_to="seg18_pitch">0 0 0 0 0 0</pose>
+			<inertial>
+				<mass>1e-10</mass>
+				<inertia>
+					<ixx>1e-10</ixx>
+					<ixy>0</ixy>
+					<ixz>0</ixz>
+					<iyy>1e-10</iyy>
+					<iyz>0</iyz>
+					<izz>1e-10</izz>
+				</inertia>
+			</inertial>
+			<visual name="seg18_yaw_vis">
+				<pose>0 0 0 0 0 0</pose>
+				<geometry>
+					<cylinder>
+						<length>0.02</length>
+						<radius>0.01</radius>
+					</cylinder>
+				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
+			</visual>
+		</link>
+		<joint name="seg18_yaw_jnt" type="revolute">
+			<pose>0 0 0 0 0 0</pose>
+			<parent>seg18_pitch</parent>
+			<child>seg18_yaw</child>
+			<axis>
+				<xyz expressed_in="seg18_pitch">0 0 1</xyz>
+				<limit>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
+				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
+			</axis>
+		</joint>
+		<link name="seg18_body">
+			<pose relative_to="seg18_yaw">-0.2 0 0 0 0 0</pose>
+			<inertial>
+				<mass>1e-05</mass>
+				<inertia>
+					<ixx>1e-05</ixx>
+					<ixy>0</ixy>
+					<ixz>0</ixz>
+					<iyy>1e-05</iyy>
+					<iyz>0</iyz>
+					<izz>1e-05</izz>
+				</inertia>
+			</inertial>
+			<visual name="seg18_body_vis">
+				<pose>0 0 0 0 1.5707963267948966 0</pose>
+				<geometry>
+					<cylinder>
+						<length>0.4</length>
+						<radius>0.01</radius>
+					</cylinder>
+				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
+			</visual>
+			<collision name="seg18_body_col">
+				<pose>0 0 0 0 1.5707963267948966 0</pose>
+				<geometry>
+					<cylinder>
+						<length>0.4</length>
+						<radius>0.01</radius>
+					</cylinder>
+				</geometry>
+			</collision>
+		</link>
+		<joint name="seg18_body_jnt" type="revolute">
+			<pose>0.2 0 0 0 0 0</pose>
+			<parent>seg18_yaw</parent>
+			<child>seg18_body</child>
+			<axis>
+				<xyz expressed_in="seg18_yaw">1 0 0</xyz>
+				<limit>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
+				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
+			</axis>
+		</joint>
+		<plugin filename="gz-sim-buoyancy-engine-system" name="gz::sim::systems::BuoyancyEngine">
+			<link_name>seg18_body</link_name>
+			<namespace>cable</namespace>
+			<min_volume>0.0000</min_volume>
+			<neutral_volume>0.00000001</neutral_volume>
+			<default_volume>0.00000002</default_volume>
+			<max_volume>0.00000003</max_volume>
+			<max_inflation_rate>0.000000001</max_inflation_rate>
+			<surface>0.0</surface>
+		</plugin>
+		<plugin filename="gz-sim-hydrodynamics-system" name="gz::sim::systems::Hydrodynamics">
+			<link_name>seg18_body</link_name>
+			<water_density>1000</water_density>
+			<xDotU>0</xDotU>
+			<yDotV>0</yDotV>
+			<zDotW>0</zDotW>
+			<kDotP>0</kDotP>
+			<mDotQ>0</mDotQ>
+			<nDotR>0</nDotR>
+			<xU>0</xU>
+			<yV>0</yV>
+			<zW>0</zW>
+			<kP>0</kP>
+			<mQ>0</mQ>
+			<nR>0</nR>
+			<xUabsU>-0.0000005</xUabsU>
+			<yVabsV>-0.0000005</yVabsV>
+			<zWabsW>-0.0000005</zWabsW>
+			<kPabsP>-0.0000001</kPabsP>
+			<mQabsQ>-0.0000001</mQabsQ>
+			<nRabsR>-0.0000001</nRabsR>
+		</plugin>
+		<link name="seg17_pitch">
+			<pose relative_to="seg18_body">-0.2 0 0 0 0 0</pose>
+			<inertial>
+				<mass>1e-10</mass>
+				<inertia>
+					<ixx>1e-10</ixx>
+					<ixy>0</ixy>
+					<ixz>0</ixz>
+					<iyy>1e-10</iyy>
+					<iyz>0</iyz>
+					<izz>1e-10</izz>
+				</inertia>
+			</inertial>
+			<visual name="seg17_pitch_vis">
+				<pose>0 0 0 1.5707963267948966  0 0</pose>
+				<geometry>
+					<cylinder>
+						<length>0.02</length>
+						<radius>0.01</radius>
+					</cylinder>
+				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
+			</visual>
+		</link>
+		<joint name="seg17_pitch_jnt" type="revolute">
+			<pose>0 0 0 0 0 0</pose>
+			<parent>seg18_body</parent>
+			<child>seg17_pitch</child>
+			<axis>
+				<xyz expressed_in="seg18_body">0 1 0</xyz>
+				<limit>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
+				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
+			</axis>
+		</joint>
+		<link name="seg17_yaw">
+			<pose relative_to="seg17_pitch">0 0 0 0 0 0</pose>
+			<inertial>
+				<mass>1e-10</mass>
+				<inertia>
+					<ixx>1e-10</ixx>
+					<ixy>0</ixy>
+					<ixz>0</ixz>
+					<iyy>1e-10</iyy>
+					<iyz>0</iyz>
+					<izz>1e-10</izz>
+				</inertia>
+			</inertial>
+			<visual name="seg17_yaw_vis">
+				<pose>0 0 0 0 0 0</pose>
+				<geometry>
+					<cylinder>
+						<length>0.02</length>
+						<radius>0.01</radius>
+					</cylinder>
+				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
+			</visual>
+		</link>
+		<joint name="seg17_yaw_jnt" type="revolute">
+			<pose>0 0 0 0 0 0</pose>
+			<parent>seg17_pitch</parent>
+			<child>seg17_yaw</child>
+			<axis>
+				<xyz expressed_in="seg17_pitch">0 0 1</xyz>
+				<limit>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
+				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
+			</axis>
+		</joint>
+		<link name="seg17_body">
+			<pose relative_to="seg17_yaw">-0.2 0 0 0 0 0</pose>
+			<inertial>
+				<mass>1e-05</mass>
+				<inertia>
+					<ixx>1e-05</ixx>
+					<ixy>0</ixy>
+					<ixz>0</ixz>
+					<iyy>1e-05</iyy>
+					<iyz>0</iyz>
+					<izz>1e-05</izz>
+				</inertia>
+			</inertial>
+			<visual name="seg17_body_vis">
+				<pose>0 0 0 0 1.5707963267948966 0</pose>
+				<geometry>
+					<cylinder>
+						<length>0.4</length>
+						<radius>0.01</radius>
+					</cylinder>
+				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
+			</visual>
+			<collision name="seg17_body_col">
+				<pose>0 0 0 0 1.5707963267948966 0</pose>
+				<geometry>
+					<cylinder>
+						<length>0.4</length>
+						<radius>0.01</radius>
+					</cylinder>
+				</geometry>
+			</collision>
+		</link>
+		<joint name="seg17_body_jnt" type="revolute">
+			<pose>0.2 0 0 0 0 0</pose>
+			<parent>seg17_yaw</parent>
+			<child>seg17_body</child>
+			<axis>
+				<xyz expressed_in="seg17_yaw">1 0 0</xyz>
+				<limit>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
+				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
+			</axis>
+		</joint>
+		<plugin filename="gz-sim-buoyancy-engine-system" name="gz::sim::systems::BuoyancyEngine">
+			<link_name>seg17_body</link_name>
+			<namespace>cable</namespace>
+			<min_volume>0.0000</min_volume>
+			<neutral_volume>0.00000001</neutral_volume>
+			<default_volume>0.00000002</default_volume>
+			<max_volume>0.00000003</max_volume>
+			<max_inflation_rate>0.000000001</max_inflation_rate>
+			<surface>0.0</surface>
+		</plugin>
+		<plugin filename="gz-sim-hydrodynamics-system" name="gz::sim::systems::Hydrodynamics">
+			<link_name>seg17_body</link_name>
+			<water_density>1000</water_density>
+			<xDotU>0</xDotU>
+			<yDotV>0</yDotV>
+			<zDotW>0</zDotW>
+			<kDotP>0</kDotP>
+			<mDotQ>0</mDotQ>
+			<nDotR>0</nDotR>
+			<xU>0</xU>
+			<yV>0</yV>
+			<zW>0</zW>
+			<kP>0</kP>
+			<mQ>0</mQ>
+			<nR>0</nR>
+			<xUabsU>-0.0000005</xUabsU>
+			<yVabsV>-0.0000005</yVabsV>
+			<zWabsW>-0.0000005</zWabsW>
+			<kPabsP>-0.0000001</kPabsP>
+			<mQabsQ>-0.0000001</mQabsQ>
+			<nRabsR>-0.0000001</nRabsR>
+		</plugin>
+		<link name="seg16_pitch">
+			<pose relative_to="seg17_body">-0.2 0 0 0 0 0</pose>
+			<inertial>
+				<mass>1e-10</mass>
+				<inertia>
+					<ixx>1e-10</ixx>
+					<ixy>0</ixy>
+					<ixz>0</ixz>
+					<iyy>1e-10</iyy>
+					<iyz>0</iyz>
+					<izz>1e-10</izz>
+				</inertia>
+			</inertial>
+			<visual name="seg16_pitch_vis">
+				<pose>0 0 0 1.5707963267948966  0 0</pose>
+				<geometry>
+					<cylinder>
+						<length>0.02</length>
+						<radius>0.01</radius>
+					</cylinder>
+				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
+			</visual>
+		</link>
+		<joint name="seg16_pitch_jnt" type="revolute">
+			<pose>0 0 0 0 0 0</pose>
+			<parent>seg17_body</parent>
+			<child>seg16_pitch</child>
+			<axis>
+				<xyz expressed_in="seg17_body">0 1 0</xyz>
+				<limit>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
+				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
+			</axis>
+		</joint>
+		<link name="seg16_yaw">
+			<pose relative_to="seg16_pitch">0 0 0 0 0 0</pose>
+			<inertial>
+				<mass>1e-10</mass>
+				<inertia>
+					<ixx>1e-10</ixx>
+					<ixy>0</ixy>
+					<ixz>0</ixz>
+					<iyy>1e-10</iyy>
+					<iyz>0</iyz>
+					<izz>1e-10</izz>
+				</inertia>
+			</inertial>
+			<visual name="seg16_yaw_vis">
+				<pose>0 0 0 0 0 0</pose>
+				<geometry>
+					<cylinder>
+						<length>0.02</length>
+						<radius>0.01</radius>
+					</cylinder>
+				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
+			</visual>
+		</link>
+		<joint name="seg16_yaw_jnt" type="revolute">
+			<pose>0 0 0 0 0 0</pose>
+			<parent>seg16_pitch</parent>
+			<child>seg16_yaw</child>
+			<axis>
+				<xyz expressed_in="seg16_pitch">0 0 1</xyz>
+				<limit>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
+				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
+			</axis>
+		</joint>
+		<link name="seg16_body">
+			<pose relative_to="seg16_yaw">-0.2 0 0 0 0 0</pose>
+			<inertial>
+				<mass>1e-05</mass>
+				<inertia>
+					<ixx>1e-05</ixx>
+					<ixy>0</ixy>
+					<ixz>0</ixz>
+					<iyy>1e-05</iyy>
+					<iyz>0</iyz>
+					<izz>1e-05</izz>
+				</inertia>
+			</inertial>
+			<visual name="seg16_body_vis">
+				<pose>0 0 0 0 1.5707963267948966 0</pose>
+				<geometry>
+					<cylinder>
+						<length>0.4</length>
+						<radius>0.01</radius>
+					</cylinder>
+				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
+			</visual>
+			<collision name="seg16_body_col">
+				<pose>0 0 0 0 1.5707963267948966 0</pose>
+				<geometry>
+					<cylinder>
+						<length>0.4</length>
+						<radius>0.01</radius>
+					</cylinder>
+				</geometry>
+			</collision>
+		</link>
+		<joint name="seg16_body_jnt" type="revolute">
+			<pose>0.2 0 0 0 0 0</pose>
+			<parent>seg16_yaw</parent>
+			<child>seg16_body</child>
+			<axis>
+				<xyz expressed_in="seg16_yaw">1 0 0</xyz>
+				<limit>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
+				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
+			</axis>
+		</joint>
+		<plugin filename="gz-sim-buoyancy-engine-system" name="gz::sim::systems::BuoyancyEngine">
+			<link_name>seg16_body</link_name>
+			<namespace>cable</namespace>
+			<min_volume>0.0000</min_volume>
+			<neutral_volume>0.00000001</neutral_volume>
+			<default_volume>0.00000002</default_volume>
+			<max_volume>0.00000003</max_volume>
+			<max_inflation_rate>0.000000001</max_inflation_rate>
+			<surface>0.0</surface>
+		</plugin>
+		<plugin filename="gz-sim-hydrodynamics-system" name="gz::sim::systems::Hydrodynamics">
+			<link_name>seg16_body</link_name>
+			<water_density>1000</water_density>
+			<xDotU>0</xDotU>
+			<yDotV>0</yDotV>
+			<zDotW>0</zDotW>
+			<kDotP>0</kDotP>
+			<mDotQ>0</mDotQ>
+			<nDotR>0</nDotR>
+			<xU>0</xU>
+			<yV>0</yV>
+			<zW>0</zW>
+			<kP>0</kP>
+			<mQ>0</mQ>
+			<nR>0</nR>
+			<xUabsU>-0.0000005</xUabsU>
+			<yVabsV>-0.0000005</yVabsV>
+			<zWabsW>-0.0000005</zWabsW>
+			<kPabsP>-0.0000001</kPabsP>
+			<mQabsQ>-0.0000001</mQabsQ>
+			<nRabsR>-0.0000001</nRabsR>
+		</plugin>
+		<link name="seg15_pitch">
+			<pose relative_to="seg16_body">-0.2 0 0 0 0 0</pose>
 			<inertial>
 				<mass>1e-10</mass>
 				<inertia>
@@ -491,18 +1391,29 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 		</link>
 		<joint name="seg15_pitch_jnt" type="revolute">
 			<pose>0 0 0 0 0 0</pose>
-			<parent>anchor</parent>
+			<parent>seg16_body</parent>
 			<child>seg15_pitch</child>
 			<axis>
-				<xyz expressed_in="anchor">0 1 0</xyz>
+				<xyz expressed_in="seg16_body">0 1 0</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<link name="seg15_yaw">
@@ -526,6 +1437,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 		</link>
 		<joint name="seg15_yaw_jnt" type="revolute">
@@ -535,9 +1451,15 @@
 			<axis>
 				<xyz expressed_in="seg15_pitch">0 0 1</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<link name="seg15_body">
@@ -561,6 +1483,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 			<collision name="seg15_body_col">
 				<pose>0 0 0 0 1.5707963267948966 0</pose>
@@ -579,9 +1506,15 @@
 			<axis>
 				<xyz expressed_in="seg15_yaw">1 0 0</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<plugin filename="gz-sim-buoyancy-engine-system" name="gz::sim::systems::BuoyancyEngine">
@@ -637,6 +1570,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 		</link>
 		<joint name="seg14_pitch_jnt" type="revolute">
@@ -646,9 +1584,15 @@
 			<axis>
 				<xyz expressed_in="seg15_body">0 1 0</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<link name="seg14_yaw">
@@ -672,6 +1616,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 		</link>
 		<joint name="seg14_yaw_jnt" type="revolute">
@@ -681,9 +1630,15 @@
 			<axis>
 				<xyz expressed_in="seg14_pitch">0 0 1</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<link name="seg14_body">
@@ -707,6 +1662,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 			<collision name="seg14_body_col">
 				<pose>0 0 0 0 1.5707963267948966 0</pose>
@@ -725,9 +1685,15 @@
 			<axis>
 				<xyz expressed_in="seg14_yaw">1 0 0</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<plugin filename="gz-sim-buoyancy-engine-system" name="gz::sim::systems::BuoyancyEngine">
@@ -783,6 +1749,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 		</link>
 		<joint name="seg13_pitch_jnt" type="revolute">
@@ -792,9 +1763,15 @@
 			<axis>
 				<xyz expressed_in="seg14_body">0 1 0</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<link name="seg13_yaw">
@@ -818,6 +1795,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 		</link>
 		<joint name="seg13_yaw_jnt" type="revolute">
@@ -827,9 +1809,15 @@
 			<axis>
 				<xyz expressed_in="seg13_pitch">0 0 1</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<link name="seg13_body">
@@ -853,6 +1841,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 			<collision name="seg13_body_col">
 				<pose>0 0 0 0 1.5707963267948966 0</pose>
@@ -871,9 +1864,15 @@
 			<axis>
 				<xyz expressed_in="seg13_yaw">1 0 0</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<plugin filename="gz-sim-buoyancy-engine-system" name="gz::sim::systems::BuoyancyEngine">
@@ -929,6 +1928,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 		</link>
 		<joint name="seg12_pitch_jnt" type="revolute">
@@ -938,9 +1942,15 @@
 			<axis>
 				<xyz expressed_in="seg13_body">0 1 0</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<link name="seg12_yaw">
@@ -964,6 +1974,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 		</link>
 		<joint name="seg12_yaw_jnt" type="revolute">
@@ -973,9 +1988,15 @@
 			<axis>
 				<xyz expressed_in="seg12_pitch">0 0 1</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<link name="seg12_body">
@@ -999,6 +2020,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 			<collision name="seg12_body_col">
 				<pose>0 0 0 0 1.5707963267948966 0</pose>
@@ -1017,9 +2043,15 @@
 			<axis>
 				<xyz expressed_in="seg12_yaw">1 0 0</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<plugin filename="gz-sim-buoyancy-engine-system" name="gz::sim::systems::BuoyancyEngine">
@@ -1075,6 +2107,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 		</link>
 		<joint name="seg11_pitch_jnt" type="revolute">
@@ -1084,9 +2121,15 @@
 			<axis>
 				<xyz expressed_in="seg12_body">0 1 0</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<link name="seg11_yaw">
@@ -1110,6 +2153,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 		</link>
 		<joint name="seg11_yaw_jnt" type="revolute">
@@ -1119,9 +2167,15 @@
 			<axis>
 				<xyz expressed_in="seg11_pitch">0 0 1</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<link name="seg11_body">
@@ -1145,6 +2199,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 			<collision name="seg11_body_col">
 				<pose>0 0 0 0 1.5707963267948966 0</pose>
@@ -1163,9 +2222,15 @@
 			<axis>
 				<xyz expressed_in="seg11_yaw">1 0 0</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<plugin filename="gz-sim-buoyancy-engine-system" name="gz::sim::systems::BuoyancyEngine">
@@ -1221,6 +2286,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 		</link>
 		<joint name="seg10_pitch_jnt" type="revolute">
@@ -1230,9 +2300,15 @@
 			<axis>
 				<xyz expressed_in="seg11_body">0 1 0</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<link name="seg10_yaw">
@@ -1256,6 +2332,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 		</link>
 		<joint name="seg10_yaw_jnt" type="revolute">
@@ -1265,9 +2346,15 @@
 			<axis>
 				<xyz expressed_in="seg10_pitch">0 0 1</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<link name="seg10_body">
@@ -1291,6 +2378,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 			<collision name="seg10_body_col">
 				<pose>0 0 0 0 1.5707963267948966 0</pose>
@@ -1309,9 +2401,15 @@
 			<axis>
 				<xyz expressed_in="seg10_yaw">1 0 0</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<plugin filename="gz-sim-buoyancy-engine-system" name="gz::sim::systems::BuoyancyEngine">
@@ -1367,6 +2465,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 		</link>
 		<joint name="seg9_pitch_jnt" type="revolute">
@@ -1376,9 +2479,15 @@
 			<axis>
 				<xyz expressed_in="seg10_body">0 1 0</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<link name="seg9_yaw">
@@ -1402,6 +2511,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 		</link>
 		<joint name="seg9_yaw_jnt" type="revolute">
@@ -1411,9 +2525,15 @@
 			<axis>
 				<xyz expressed_in="seg9_pitch">0 0 1</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<link name="seg9_body">
@@ -1437,6 +2557,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 			<collision name="seg9_body_col">
 				<pose>0 0 0 0 1.5707963267948966 0</pose>
@@ -1455,9 +2580,15 @@
 			<axis>
 				<xyz expressed_in="seg9_yaw">1 0 0</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<plugin filename="gz-sim-buoyancy-engine-system" name="gz::sim::systems::BuoyancyEngine">
@@ -1513,6 +2644,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 		</link>
 		<joint name="seg8_pitch_jnt" type="revolute">
@@ -1522,9 +2658,15 @@
 			<axis>
 				<xyz expressed_in="seg9_body">0 1 0</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<link name="seg8_yaw">
@@ -1548,6 +2690,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 		</link>
 		<joint name="seg8_yaw_jnt" type="revolute">
@@ -1557,9 +2704,15 @@
 			<axis>
 				<xyz expressed_in="seg8_pitch">0 0 1</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<link name="seg8_body">
@@ -1583,6 +2736,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 			<collision name="seg8_body_col">
 				<pose>0 0 0 0 1.5707963267948966 0</pose>
@@ -1601,9 +2759,15 @@
 			<axis>
 				<xyz expressed_in="seg8_yaw">1 0 0</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<plugin filename="gz-sim-buoyancy-engine-system" name="gz::sim::systems::BuoyancyEngine">
@@ -1659,6 +2823,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 		</link>
 		<joint name="seg7_pitch_jnt" type="revolute">
@@ -1668,9 +2837,15 @@
 			<axis>
 				<xyz expressed_in="seg8_body">0 1 0</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<link name="seg7_yaw">
@@ -1694,6 +2869,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 		</link>
 		<joint name="seg7_yaw_jnt" type="revolute">
@@ -1703,9 +2883,15 @@
 			<axis>
 				<xyz expressed_in="seg7_pitch">0 0 1</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<link name="seg7_body">
@@ -1729,6 +2915,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 			<collision name="seg7_body_col">
 				<pose>0 0 0 0 1.5707963267948966 0</pose>
@@ -1747,9 +2938,15 @@
 			<axis>
 				<xyz expressed_in="seg7_yaw">1 0 0</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<plugin filename="gz-sim-buoyancy-engine-system" name="gz::sim::systems::BuoyancyEngine">
@@ -1805,6 +3002,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 		</link>
 		<joint name="seg6_pitch_jnt" type="revolute">
@@ -1814,9 +3016,15 @@
 			<axis>
 				<xyz expressed_in="seg7_body">0 1 0</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<link name="seg6_yaw">
@@ -1840,6 +3048,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 		</link>
 		<joint name="seg6_yaw_jnt" type="revolute">
@@ -1849,9 +3062,15 @@
 			<axis>
 				<xyz expressed_in="seg6_pitch">0 0 1</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<link name="seg6_body">
@@ -1875,6 +3094,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 			<collision name="seg6_body_col">
 				<pose>0 0 0 0 1.5707963267948966 0</pose>
@@ -1893,9 +3117,15 @@
 			<axis>
 				<xyz expressed_in="seg6_yaw">1 0 0</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<plugin filename="gz-sim-buoyancy-engine-system" name="gz::sim::systems::BuoyancyEngine">
@@ -1951,6 +3181,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 		</link>
 		<joint name="seg5_pitch_jnt" type="revolute">
@@ -1960,9 +3195,15 @@
 			<axis>
 				<xyz expressed_in="seg6_body">0 1 0</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<link name="seg5_yaw">
@@ -1986,6 +3227,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 		</link>
 		<joint name="seg5_yaw_jnt" type="revolute">
@@ -1995,9 +3241,15 @@
 			<axis>
 				<xyz expressed_in="seg5_pitch">0 0 1</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<link name="seg5_body">
@@ -2021,6 +3273,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 			<collision name="seg5_body_col">
 				<pose>0 0 0 0 1.5707963267948966 0</pose>
@@ -2039,9 +3296,15 @@
 			<axis>
 				<xyz expressed_in="seg5_yaw">1 0 0</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<plugin filename="gz-sim-buoyancy-engine-system" name="gz::sim::systems::BuoyancyEngine">
@@ -2097,6 +3360,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 		</link>
 		<joint name="seg4_pitch_jnt" type="revolute">
@@ -2106,9 +3374,15 @@
 			<axis>
 				<xyz expressed_in="seg5_body">0 1 0</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<link name="seg4_yaw">
@@ -2132,6 +3406,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 		</link>
 		<joint name="seg4_yaw_jnt" type="revolute">
@@ -2141,9 +3420,15 @@
 			<axis>
 				<xyz expressed_in="seg4_pitch">0 0 1</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<link name="seg4_body">
@@ -2167,6 +3452,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 			<collision name="seg4_body_col">
 				<pose>0 0 0 0 1.5707963267948966 0</pose>
@@ -2185,9 +3475,15 @@
 			<axis>
 				<xyz expressed_in="seg4_yaw">1 0 0</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<plugin filename="gz-sim-buoyancy-engine-system" name="gz::sim::systems::BuoyancyEngine">
@@ -2243,6 +3539,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 		</link>
 		<joint name="seg3_pitch_jnt" type="revolute">
@@ -2252,9 +3553,15 @@
 			<axis>
 				<xyz expressed_in="seg4_body">0 1 0</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<link name="seg3_yaw">
@@ -2278,6 +3585,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 		</link>
 		<joint name="seg3_yaw_jnt" type="revolute">
@@ -2287,9 +3599,15 @@
 			<axis>
 				<xyz expressed_in="seg3_pitch">0 0 1</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<link name="seg3_body">
@@ -2313,6 +3631,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 			<collision name="seg3_body_col">
 				<pose>0 0 0 0 1.5707963267948966 0</pose>
@@ -2331,9 +3654,15 @@
 			<axis>
 				<xyz expressed_in="seg3_yaw">1 0 0</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<plugin filename="gz-sim-buoyancy-engine-system" name="gz::sim::systems::BuoyancyEngine">
@@ -2389,6 +3718,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 		</link>
 		<joint name="seg2_pitch_jnt" type="revolute">
@@ -2398,9 +3732,15 @@
 			<axis>
 				<xyz expressed_in="seg3_body">0 1 0</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<link name="seg2_yaw">
@@ -2424,6 +3764,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 		</link>
 		<joint name="seg2_yaw_jnt" type="revolute">
@@ -2433,9 +3778,15 @@
 			<axis>
 				<xyz expressed_in="seg2_pitch">0 0 1</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<link name="seg2_body">
@@ -2459,6 +3810,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 			<collision name="seg2_body_col">
 				<pose>0 0 0 0 1.5707963267948966 0</pose>
@@ -2477,9 +3833,15 @@
 			<axis>
 				<xyz expressed_in="seg2_yaw">1 0 0</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<plugin filename="gz-sim-buoyancy-engine-system" name="gz::sim::systems::BuoyancyEngine">
@@ -2535,6 +3897,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 		</link>
 		<joint name="seg1_pitch_jnt" type="revolute">
@@ -2544,9 +3911,15 @@
 			<axis>
 				<xyz expressed_in="seg2_body">0 1 0</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<link name="seg1_yaw">
@@ -2570,6 +3943,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 		</link>
 		<joint name="seg1_yaw_jnt" type="revolute">
@@ -2579,9 +3957,15 @@
 			<axis>
 				<xyz expressed_in="seg1_pitch">0 0 1</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<link name="seg1_body">
@@ -2605,6 +3989,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 			<collision name="seg1_body_col">
 				<pose>0 0 0 0 1.5707963267948966 0</pose>
@@ -2623,9 +4012,15 @@
 			<axis>
 				<xyz expressed_in="seg1_yaw">1 0 0</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<plugin filename="gz-sim-buoyancy-engine-system" name="gz::sim::systems::BuoyancyEngine">
@@ -2681,6 +4076,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 		</link>
 		<joint name="seg0_pitch_jnt" type="revolute">
@@ -2690,9 +4090,15 @@
 			<axis>
 				<xyz expressed_in="seg1_body">0 1 0</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<link name="seg0_yaw">
@@ -2716,6 +4122,11 @@
 						<radius>0.01</radius>
 					</cylinder>
 				</geometry>
+				<material>
+					<ambient>0.8 0 0 1</ambient>
+					<diffuse>0.8 0 0 1</diffuse>
+					<specular>0.8 0 0 1</specular>
+				</material>
 			</visual>
 		</link>
 		<joint name="seg0_yaw_jnt" type="revolute">
@@ -2725,9 +4136,15 @@
 			<axis>
 				<xyz expressed_in="seg0_pitch">0 0 1</xyz>
 				<limit>
-					<lower>-1.5707963267948966</lower>
-					<upper>1.5707963267948966</upper>
+					<lower>-0.7853981633974483</lower>
+					<upper>0.7853981633974483</upper>
 				</limit>
+				<dynamics>
+					<damping>0.2</damping>
+					<friction>0.0</friction>
+					<spring_reference>0.0</spring_reference>
+					<spring_stiffness>0.1</spring_stiffness>
+				</dynamics>
 			</axis>
 		</joint>
 		<link name="cable_base_link">

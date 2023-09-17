@@ -7,6 +7,14 @@ import subprocess
 
 linkType = ['pitch','yaw','body']
 
+color_palette=['0 0 0.8 1',
+               '0 0.8 0 1',
+               '0.8 0 0 1',
+               '0.8 0.8 0 1'
+               ]
+
+
+joint_limits=[-math.pi/4, math.pi/4]
 
 def add_pose2parent(parentEl, elStr, relative_to=None):
     if relative_to==None:
@@ -65,13 +73,23 @@ def add_cylinder2parent(parentEl, len, rad):
     el.append(el2)
     parentEl.append(el)
 
+def add_material2parent(parentEl,color_id):
+    el = ET.Element('material')
+    add_tagwithText(el,'ambient',color_palette[color_id])
+    add_tagwithText(el,'diffuse',color_palette[color_id])
+    add_tagwithText(el,'specular',color_palette[color_id])
+    # el.append(el)
+    parentEl.append(el)
 
-def add_visual2parent(parentEl, tagName, visPose, geoType, var1, var2):
+def add_visual2parent(parentEl, tagName, visPose, geoType, var1, var2, color_id):
     el = ET.Element('visual',{'name':tagName})
     add_pose2parent(el,visPose)
     #cylinder
     if geoType == 'cylinder':
-        add_cylinder2parent(el, var1, var2)    
+        add_cylinder2parent(el, var1, var2)  
+    
+    add_material2parent(el, color_id)
+
     parentEl.append(el)
 
 def add_collision2parent(parentEl, tagName, visPose, geoType, var1, var2):
@@ -82,6 +100,28 @@ def add_collision2parent(parentEl, tagName, visPose, geoType, var1, var2):
         add_cylinder2parent(el, var1, var2)    
     parentEl.append(el)
 
+def add_dynamics2parent(parentEl):
+    el = ET.Element('dynamics')
+
+    subEl = ET.Element('damping')
+    subEl.text = '0.2'
+    el.append(subEl)
+
+    subEl = ET.Element('friction')
+    subEl.text = '0.0'
+    el.append(subEl)
+
+    subEl = ET.Element('spring_reference')
+    subEl.text = '0.0'
+    el.append(subEl)
+
+    subEl = ET.Element('spring_stiffness')
+    subEl.text = '0.1'
+    el.append(subEl)
+
+    parentEl.append(el)
+
+
 
 def add_axis2parent(parentEl, expressed_in, xyz):
     el = ET.Element('axis')
@@ -91,9 +131,11 @@ def add_axis2parent(parentEl, expressed_in, xyz):
     el.append(el1)
 
     el1 = ET.Element('limit')
-    add_tagwithText(el1,'lower','-1.5707963267948966')
-    add_tagwithText(el1,'upper','1.5707963267948966')    
+    add_tagwithText(el1,'lower',str(joint_limits[0])) # '-1.5707963267948966')
+    add_tagwithText(el1,'upper',str(joint_limits[1])) # '1.5707963267948966')    
     el.append(el1)
+
+    add_dynamics2parent(el)
 
     parentEl.append(el)
 
@@ -103,7 +145,7 @@ small_inertia = str(1.0e-10)
 link_mass = str(1.0e-5)
 link_iner = str(1.0e-5)
 
-def add_cable_seg(input_path, output_path, numOfseg):    
+def add_cable_seg(input_path, output_path, numOfseg, color_id):    
     tree = ET.parse(input_path)
 
     root = tree.getroot()
@@ -120,7 +162,7 @@ def add_cable_seg(input_path, output_path, numOfseg):
     
     subEl = ET.SubElement(root[0],'link',attrib={'name':'anchor'})
     add_pose2parent(subEl,'0 0 0 0 -1.5707963267948966 0')
-    add_visual2parent(subEl,'anchor_vis','0 0 0 0 1.5707963267948966 0', 'cylinder','0.05', '0.3')
+    add_visual2parent(subEl,'anchor_vis','0 0 0 0 1.5707963267948966 0', 'cylinder','0.05', '0.3', color_id)
 
     subEl = ET.SubElement(root[0],'joint',attrib={'name':'world_fixed_jnt','type':'fixed'})
     add_pose2parent(subEl,'0 0 0 0 0 0')
@@ -175,7 +217,7 @@ def add_cable_seg(input_path, output_path, numOfseg):
             subEl = ET.SubElement(root[0],'link',attrib={'name':lnName})
             add_pose2parent(subEl,link_pose,preLink)
             add_inertial2parent(subEl,link_inertia[0],link_inertia[1],link_inertia[2],link_inertia[3],link_inertia[4],link_inertia[5],link_inertia[6])
-            add_visual2parent(subEl,visName,vis_pose, 'cylinder',cylinder_len, cylinder_rad)
+            add_visual2parent(subEl,visName,vis_pose, 'cylinder',cylinder_len, cylinder_rad, color_id)
             if lt == 'body':
                 add_collision2parent(subEl,colName,vis_pose, 'cylinder',cylinder_len, cylinder_rad)
 
@@ -239,15 +281,16 @@ def add_cable_seg(input_path, output_path, numOfseg):
 if __name__ == "__main__":
     # add cable segments to the existing sdf model
     # it will replace 'model.sdf' file in the folder
-    if len(sys.argv) != 4:
+    if len(sys.argv) != 5:
         print("Usage:")
-        print("attach_cable_anchor.py model_name number_of_cable_segments(integer value) fdm_port_id")        
+        print("attach_cable_anchor.py model_name number_of_cable_segments(integer value) fdm_port_id color_id")        
         exit(-100)
 
 
     target_model_name = sys.argv[1]
     numSeg = int(sys.argv[2])
     port_id = sys.argv[3]
+    color_id = int(sys.argv[4])
 
     subprocess.run(["python", "gen_model.py",target_model_name, port_id])
 
@@ -255,4 +298,4 @@ if __name__ == "__main__":
     dest_file = "../models_test/{}/model.sdf".format(target_model_name)
 
 
-    add_cable_seg(src_file, dest_file, numSeg)
+    add_cable_seg(src_file, dest_file, numSeg, color_id)
