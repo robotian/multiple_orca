@@ -53,21 +53,21 @@ def generate_launch_description():
     # models/{rov-name}
     # params/sim_mavros_params_{rov-name}
     robots = [
-        {'name': 'rov1', 'x_pose': 0.0, 'y_pose': 0.0, 'z_pose': 0.0,
+        {'name': 'tur1', 'x_pose': 0.0, 'y_pose': 0.0, 'z_pose': 0.0,
                            'x': 0.0, 'y': 0.0, 'z': 0.0, 'w': 1.0, 'instance':'-I0',
                            'home':'33.810313,-118.39386700000001,0.0,270.0',
                            'sysid':'1',
                         #    'fcu_url':'tcp://localhost:5760',
                         #    'gcs_url':'udp://@localhost:14550'
                            },
-        {'name': 'rov2', 'x_pose': 0.0, 'y_pose': 3.0, 'z_pose': 0.0,
+        {'name': 'tur2', 'x_pose': 0.0, 'y_pose': 3.0, 'z_pose': 0.0,
                            'x': 0.0, 'y': 0.0, 'z': 0.0, 'w': 1.0, 'instance':'-I1',
                            'home':'33.810311,-118.39386700000001,0.0,270.0',
                            'sysid':'2',
                         #    'fcu_url':'tcp://localhost:5770',
                         #    'gcs_url':'udp://@localhost:14560'
                            },
-        {'name': 'rov3', 'x_pose': 1.5, 'y_pose': 1.5, 'z_pose': 0.0,
+        {'name': 'tur3', 'x_pose': 1.5, 'y_pose': 1.5, 'z_pose': 0.0,
                            'x': 0.0, 'y': 0.0, 'z': 0.0, 'w': 1.0, 'instance':'-I2',
                            'home':'33.810311,-118.39386700000001,0.0,270.0',
                            'sysid':'3',
@@ -87,7 +87,7 @@ def generate_launch_description():
     # to use the gazebo time, /clock topic should be published. You can do it using parameter bride.
     declare_use_sim_time_cmd = DeclareLaunchArgument(
             'use_sim_time',
-            default_value='True',
+            default_value='false',
             description='use_sim_time param')
     
     
