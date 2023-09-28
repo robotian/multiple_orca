@@ -300,7 +300,8 @@ def generate_launch_description():
             }],
             remappings=[
                 ('camera_info', 'stereo_left/camera_info'),
-                tuple(remappings),
+                ('/tf', 'tf'),
+                ('/tf_static', 'tf_static')
             ],
             # condition=IfCondition(LaunchConfiguration('slam'))
         )
@@ -320,7 +321,8 @@ def generate_launch_description():
             }],
             remappings=[
                 ('camera_info', 'stereo_right/camera_info'),
-                tuple(remappings),
+                ('/tf', 'tf'),
+                ('/tf_static', 'tf_static')
             ],
             # condition=IfCondition(LaunchConfiguration('slam'))
         )
@@ -341,7 +343,20 @@ def generate_launch_description():
                 'slam': LaunchConfiguration('slam'),
                 'use_sim_time':use_sim_time
             }.items(),
-        )       
+        )      
+
+        pose_pub_cmd =  Node(
+            package='multiple_orca',
+            executable='tf2pose_publisher',
+            output='screen',
+            namespace=rov_ns,
+            parameters=[{
+                'target_tf':'bluerov2_heavy',
+                'fixed_tf':'map',        
+            }],
+            remappings=[('/tf', 'tf'),
+                  ('/tf_static', 'tf_static')] 
+        )
 
 
         instances_cmds.append(start_ardusub_rov_cmd)
@@ -357,8 +372,9 @@ def generate_launch_description():
         instances_cmds.append(start_orca_cam_left_cmd)
         instances_cmds.append(start_orca_cam_right_cmd)        
         instances_cmds.append(start_spawn_rov_cmd)        
-        # instances_cmds.append(orca_bringup_cmd)
+        instances_cmds.append(orca_bringup_cmd)
         instances_cmds.append(tf_static_pub_cmd)
+        instances_cmds.append(pose_pub_cmd)
 
     
     ld = LaunchDescription()
@@ -371,4 +387,5 @@ def generate_launch_description():
         ld.add_action(inst)
     
     return ld
+
 

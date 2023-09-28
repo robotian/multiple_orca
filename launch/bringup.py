@@ -323,6 +323,7 @@ def generate_launch_description():
             remappings=[
                 # Topic is hard coded in orb_slam2_ros to /orb_slam2_stereo_node/pose
                 ('camera_pose', 'orb_slam2_stereo_node/pose'), 
+                # ('camera_pose', 'pose'), 
                 ('/tf', 'tf'),
                 ('/tf_static', 'tf_static')
             ],
@@ -341,6 +342,7 @@ def generate_launch_description():
             remappings=[
                 # Topic is hard coded in orb_slam2_ros to /orb_slam2_stereo_node/pose
                 ('camera_pose', 'orb_slam2_stereo_node/pose'),
+                # ('camera_pose', 'pose'), 
                 # remappings,
                 ('/tf', 'tf'),
                 ('/tf_static', 'tf_static')
