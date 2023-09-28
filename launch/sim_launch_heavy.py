@@ -112,7 +112,7 @@ def generate_launch_description():
         rov_ns = robot['name']
 
         mavros_params_file = os.path.join(multiorca_dir, 'params', f"sim_mavros_params_{robot['name']}.yaml")
-        ardusub_rov_params_file = os.path.join(multiorca_dir, 'cfg',  'sub.parm')  
+        ardusub_rov_params_file = os.path.join(multiorca_dir, 'cfg',  'sub_heavy.parm')  
 
         rviz_config_file = LaunchConfiguration('rviz_config')   
 
