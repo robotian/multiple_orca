@@ -292,25 +292,25 @@ def generate_launch_description():
         ),
 
         # orb_slam2: build a map of 3d points, localize against the map, and publish the camera pose
-        Node(
-            package='orb_slam2_ros',
-            executable='orb_slam2_ros_stereo',
-            output='screen',
-            name='orb_slam2_stereo',
-            namespace = namespace,
-            parameters=[orca_params_file, {
-                'voc_file': orb_voc_file,
-                'use_sim_time': use_sim_time,
-            }],
-            remappings=[
-                ('/image_left/image_color_rect', 'stereo_left'),
-                ('/image_right/image_color_rect', 'stereo_right'),
-                ('/camera/camera_info', 'stereo_right/camera_info'),
-                ('/tf', 'tf'),
-                ('/tf_static', 'tf_static')
-            ],
-            condition=IfCondition(LaunchConfiguration('slam')),
-        ),
+        # Node(
+        #     package='orb_slam2_ros',
+        #     executable='orb_slam2_ros_stereo',
+        #     output='screen',
+        #     name='orb_slam2_stereo',
+        #     namespace = namespace,
+        #     parameters=[orca_params_file, {
+        #         'voc_file': orb_voc_file,
+        #         'use_sim_time': use_sim_time,
+        #     }],
+        #     remappings=[
+        #         ('/image_left/image_color_rect', 'stereo_left'),
+        #         ('/image_right/image_color_rect', 'stereo_right'),
+        #         ('/camera/camera_info', 'stereo_right/camera_info'),
+        #         ('/tf', 'tf'),
+        #         ('/tf_static', 'tf_static')
+        #     ],
+        #     condition=IfCondition(LaunchConfiguration('slam')),
+        # ),
         # Manage overall system (start, stop, etc.)
         Node(
             package='orca_base',
@@ -322,8 +322,8 @@ def generate_launch_description():
             namespace = namespace,
             remappings=[
                 # Topic is hard coded in orb_slam2_ros to /orb_slam2_stereo_node/pose
-                ('camera_pose', 'orb_slam2_stereo_node/pose'), 
-                # ('camera_pose', 'pose'), 
+                # ('camera_pose', 'orb_slam2_stereo_node/pose'), 
+                ('camera_pose', 'pose'), 
                 ('/tf', 'tf'),
                 ('/tf_static', 'tf_static')
             ],
@@ -341,8 +341,8 @@ def generate_launch_description():
             namespace = namespace,
             remappings=[
                 # Topic is hard coded in orb_slam2_ros to /orb_slam2_stereo_node/pose
-                ('camera_pose', 'orb_slam2_stereo_node/pose'),
-                # ('camera_pose', 'pose'), 
+                # ('camera_pose', 'orb_slam2_stereo_node/pose'),
+                ('camera_pose', 'pose'), 
                 # remappings,
                 ('/tf', 'tf'),
                 ('/tf_static', 'tf_static')

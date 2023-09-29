@@ -4,8 +4,8 @@ bt_navigator:
   ros__parameters:
     use_sim_time: False
     global_frame: "map"
-    robot_base_frame: "base_link"
-    odom_topic: "odom"  #MK
+    robot_base_frame: "bluerov2_heavy"
+    odom_topic: "odometry"  #MK
     bt_loop_duration: 10
     default_server_timeout: 20
     default_nav_to_pose_bt_xml: "bringup.py should replace me"
@@ -104,8 +104,8 @@ local_costmap:
     ros__parameters:
       update_frequency: 5.0
       publish_frequency: 2.0
-      global_frame: "odom"
-      robot_base_frame: "base_link"
+      global_frame: "map"
+      robot_base_frame: "bluerov2_heavy"
       use_sim_time: False
       rolling_window: True
       width: 3
@@ -147,7 +147,7 @@ global_costmap:
       update_frequency: 10.0
       publish_frequency: 1.0
       global_frame: "map"
-      robot_base_frame: "base_link"
+      robot_base_frame: "bluerov2_heavy"
       use_sim_time: False
       width: 100
       height: 100
@@ -203,8 +203,8 @@ recoveries_server:
       plugin: "nav2_recoveries/BackUp"
     wait:
       plugin: "nav2_recoveries/Wait"
-    global_frame: "odom"
-    robot_base_frame: "base_link"
+    global_frame: "map"
+    robot_base_frame: "bluerov2_heavy"
     transform_timeout: 0.1
     use_sim_time: False
     simulate_ahead_time: 2.0
